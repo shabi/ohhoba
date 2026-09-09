@@ -1,0 +1,20 @@
+{
+  "posts": [
+    {
+      "id": "the-first-night",
+
+      "date": "2026-06-01",
+
+      "title": "The First Night",
+
+      "description": "A small experiment exploring language, symbols, and imagination.",
+
+      "image": "/opengraph-image",
+
+      "tags": [
+        "language",
+        "symbols"
+      ]
+    }
+  ]
+}

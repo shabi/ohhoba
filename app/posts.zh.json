@@ -1,0 +1,20 @@
+{
+  "posts": [
+    {
+      "id": "the-first-night",
+
+      "date": "2026-06-01",
+
+      "title": "第一夜",
+
+      "description": "探索语言、符号与想象力的实验文章。",
+
+      "image": "/opengraph-image",
+
+      "tags": [
+        "语言",
+        "符号"
+      ]
+    }
+  ]
+}
