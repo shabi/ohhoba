@@ -93,8 +93,7 @@ export default function RootLayout({
       suppressHydrationWarning={true}
     >
 
-      <body className="dark:text-gray-100 max-w-2xl m-auto">
-
+      <body className="dark:text-gray-100 m-0">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -129,16 +128,11 @@ export default function RootLayout({
         />
 
 
-        <main className="p-6 pt-3 md:pt-6 min-h-screen">
-
-          <Header />
-
+        <main>
           {children}
 
         </main>
 
-
-        <Footer />
 
 
         <Analytics />
