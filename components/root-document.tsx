@@ -8,7 +8,7 @@ const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
     { "@type": "WebSite", "@id": "https://ohhoba.com/#website", name: "OhHoBa", url: "https://ohhoba.com/", description: "A digital museum for unusual forms and ideas still becoming.", inLanguage: ["en", "zh-CN"] },
-    { "@type": "Organization", "@id": "https://ohhoba.com/#organization", name: "OhHoBa", url: "https://ohhoba.com/", logo: { "@type": "ImageObject", url: "https://ohhoba.com/images/icon.svg" }, description: "An independent digital museum and art lab." },
+    { "@type": "Organization", "@id": "https://ohhoba.com/#organization", name: "OhHoBa", url: "https://ohhoba.com/", logo: { "@type": "ImageObject", url: "https://ohhoba.com/google-icon.png" }, description: "An independent digital museum and art lab." },
   ],
 };
 
