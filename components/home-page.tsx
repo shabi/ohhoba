@@ -1,133 +1,102 @@
-"use client";
-
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
-import { useRef } from "react";
 import { siteCopy, type SiteLocale } from "@/app/site-content";
-import { HeroVisual } from "./hero-visual";
+import { collectionItems } from "@/app/collections-data";
 import { SiteHeader } from "./site-header";
+import { BrandPreloader } from "./brand-preloader";
 import { SiteFooter } from "./site-footer";
+import { CollectionArtwork } from "./artwork";
 
 export function HomePage({ lang }: { lang: SiteLocale }) {
   const c = siteCopy[lang];
-  const isZh = lang === "zh";
-  const heroRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const textProgress = useSpring(scrollYProgress, { stiffness: 220, damping: 30, mass: 0.35 });
-  const imageProgress = useSpring(scrollYProgress, { stiffness: 38, damping: 34, mass: 1.5 });
-  const titleY = useTransform(textProgress, [0, 1], [0, -340]);
-  const bodyY = useTransform(textProgress, [0, 1], [0, -245]);
-  const visualY = useTransform(imageProgress, [0, 1], [0, 74]);
-  const visualScale = useTransform(imageProgress, [0, 1], [0.988, 1.026]);
+  const prefix = lang === "zh" ? "/zh" : "";
+  const [seed, ...otherWorks] = collectionItems;
 
   return (
-    <div className="site-shell">
+    <div className={`site-shell archive-home ${lang === "zh" ? "archive-home-zh" : "archive-home-en"}`}>
+      <BrandPreloader lang={lang} />
       <SiteHeader lang={lang} />
-      <main>
-        <section ref={heroRef} className="hero-sequence" aria-labelledby="home-title">
-          <div className="hero-intro">
-            <div className="hero-title-block">
-              <div className="hero-title-grid">
-                <motion.div
-                  className="hero-title-layer"
-                  style={{ y: titleY }}
-                >
-                  <motion.h1
-                    id="home-title"
-                    initial={{ opacity: 0, y: 34 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: .72, ease: [.22,.61,.36,1] }}
-                  >
-                    {c.heroTitle}
-                  </motion.h1>
-                </motion.div>
-                <div className="ohhoba-guides" aria-hidden="true">
-                  <span className="ohhoba-guide ohhoba-guide-1" />
-                  <span className="ohhoba-guide ohhoba-guide-2" />
-                  <span className="ohhoba-guide ohhoba-guide-3" />
-                  <span className="ohhoba-guide ohhoba-guide-4" />
-                  <span className="ohhoba-guide ohhoba-guide-5" />
-                </div>
-              </div>
-              <motion.p className="hero-body-layer" style={{ y: bodyY }}>{c.heroBody}</motion.p>
+      <main id="main-content">
+        <section className="archive-hero" aria-labelledby="home-title">
+          <div className="archive-hero-art" aria-hidden="true">
+            <Image src="/images/hero-light-closed-v27.webp" alt="" fill priority sizes="100vw" className="archive-hero-image archive-hero-image-light" />
+            <Image src="/images/hero-dark-selected-v33-anchor.webp" alt="" fill priority sizes="100vw" className="archive-hero-image archive-hero-image-dark" />
+          </div>
+          <div className="archive-hero-copy page-gutter">
+            <p className="archive-kicker">{lang === "zh" ? "数字档案馆" : "DIGITAL ARCHIVE"}</p>
+            <h1 id="home-title" className="archive-wordmark">OhHoBa</h1>
+            <h2 className="archive-headline">
+              {lang === "zh" ? <><span className="zh-no-break">一座持续生长的</span><br />想象档案馆。</> : <>A Living Archive<br />of Imagination.</>}
+            </h2>
+            <p className="archive-deck">
+              {lang === "zh" ? "收藏奇异的形态、非寻常的造物，以及仍在形成中的想法。" : "Strange ideas. Unusual objects. New ways to see."}
+            </p>
+            <Link className="archive-hero-link" href={`${prefix}/collections`}>
+              <span className="archive-arrow-disc" aria-hidden="true"><ArrowRight size={19} /></span>
+              <span>{lang === "zh" ? "探索藏品" : "Explore Archive"}</span>
+            </Link>
+          </div>
+          <div className="archive-hero-index" aria-hidden="true">
+            <span>{lang === "zh" ? "精选藏品" : "FEATURED COLLECTION"}</span>
+            <strong>001 <i>/</i> {seed.title[lang]}</strong>
+            <span className="archive-index-rule" />
+          </div>
+          <a className="archive-scroll" href="#featured"><span>{lang === "zh" ? "向下探索" : "SCROLL TO EXPLORE"}</span><span aria-hidden="true">↓</span></a>
+        </section>
+
+        <section id="featured" className="archive-collection" aria-labelledby="featured-heading">
+          <header className="archive-collection-heading page-gutter">
+            <p className="archive-kicker">{lang === "zh" ? "精选藏品" : "FEATURED COLLECTION"}</p>
+            <span className="archive-heading-rule" aria-hidden="true" />
+            <Link href={`${prefix}/collections`} className="archive-view-all"><span>{c.viewAll}</span><span className="archive-arrow-disc" aria-hidden="true"><ArrowRight size={18} /></span></Link>
+          </header>
+          <div className="archive-work-layout page-gutter">
+            <Link href={`${prefix}/collections/${seed.slug}`} className="archive-featured-image" aria-label={`${seed.title[lang]} — ${c.readObject}`}>
+              <CollectionArtwork item={seed} lang={lang} priority />
+            </Link>
+            <article className="archive-featured-copy">
+              <p className="archive-work-number">001</p>
+              <h2 id="featured-heading">{seed.title[lang]}</h2>
+              <p className="archive-work-description">{seed.description[lang]}</p>
+              <Link href={`${prefix}/collections/${seed.slug}`} className="archive-text-link">{c.readObject}<ArrowRight size={19} aria-hidden="true" /></Link>
+            </article>
+            <div className="archive-secondary-works" aria-label={lang === "zh" ? "更多藏品" : "More works from the archive"}>
+              {otherWorks.map((item, index) => (
+                <article className="archive-work" key={item.slug}>
+                  <Link href={`${prefix}/collections/${item.slug}`} className="archive-work-image" aria-label={`${item.title[lang]} — ${c.readObject}`}>
+                    <CollectionArtwork item={item} lang={lang} />
+                  </Link>
+                  <div className="archive-work-index"><span>00{index + 2}</span><ArrowUpRight size={14} aria-hidden="true" /></div>
+                  <h3><Link href={`${prefix}/collections/${item.slug}`}>{item.title[lang]}</Link></h3>
+                  <p>{item.category[lang]}</p>
+                </article>
+              ))}
             </div>
           </div>
+        </section>
 
-          <motion.div className="hero-visual-layer" style={{ y: visualY, scale: visualScale }}>
-            <HeroVisual />
-          </motion.div>
-
-          <div className="hero-object-note">
-            <span>{c.heroObject}</span>
-            <div>{c.heroMeta.map(line => <span key={line}>{line}</span>)}</div>
+        <section className="archive-lab page-gutter" aria-labelledby="archive-lab-heading">
+          <div className="archive-lab-art" aria-hidden="true">
+            <Image src="/images/geometric-dream.webp" alt="" fill sizes="(max-width: 760px) 100vw, 48vw" />
+            <span className="archive-lab-orbit" />
+          </div>
+          <div className="archive-lab-copy">
+            <p className="archive-kicker">{lang === "zh" ? "艺术实验室" : "THE ART LAB"}</p>
+            <h2 id="archive-lab-heading">{lang === "zh" ? "观看距离，会改变你读到的形态。" : <>Distance changes<br />the reading of a form.</>}</h2>
+            <p>{lang === "zh" ? "调整观看距离，观察同一形态的比例、边缘与留白如何改变解读。" : "Adjust distance to see how proportion, edges, and negative space change the reading of the same form."}</p>
+            <Link className="archive-lab-link" href={`${prefix}/experiments/shape-study`}>{c.tryExperiment}<ArrowRight size={17} aria-hidden="true" /></Link>
           </div>
         </section>
 
-        <section className="feature-intro section-pad" aria-labelledby="feature-title">
-          <div className="feature-intro-grid">
-            <div>
-              <span className="section-number">00 — {c.featureLabel}</span>
-              <h2 id="feature-title">{c.featureIntro}</h2>
+        <section className="archive-about page-gutter" aria-labelledby="archive-about-heading">
+          <p className="archive-kicker">{lang === "zh" ? "关于 OhHoBa" : "ABOUT OHHOBA"}</p>
+          <div className="archive-about-main">
+            <h2 id="archive-about-heading">{lang === "zh" ? <>给尚未定型的<span className="zh-no-break">事物</span>一个位置。</> : "An archive for things without a fixed category."}</h2>
+            <div className="archive-about-aside">
+              <p>{lang === "zh" ? "我们收录虚构造物、视觉研究与实验性表达。作品不必给出最终答案，但每件作品都值得被认真观看。" : "We collect invented objects, visual studies, and experimental forms of expression. The work can remain unresolved; the way it is presented should not."}</p>
+              <Link className="archive-text-link" href={`${prefix}/about`}>{c.aboutLink}<ArrowRight size={18} aria-hidden="true" /></Link>
             </div>
-          </div>
-        </section>
-
-        <section className="sequence-section" aria-label={c.featureLabel}>
-          <div className="sequence-media-wrap" aria-hidden="true">
-            <div className="sequence-media-frame-label"><span>{c.heroObject}</span><span>001 / 005</span></div>
-            <div className="sequence-media">
-              <div className="sequence-media-layer is-active">
-                <HeroVisual />
-              </div>
-            </div>
-            <div className="sequence-media-footnote">{c.heroMeta[0]} · {c.heroMeta[2]}</div>
-          </div>
-          <div className="sequence-content">
-            {c.features.map(([number, title, body]) => (
-              <article key={number} className="sequence-step">
-                <span className="section-number">{number}</span>
-                <h3>{title}</h3>
-                <p>{body}</p>
-                <span className="sequence-link">{isZh ? "继续查看" : "Look again"} <ArrowRight size={14} /></span>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section id="archive" className="archive-section section-pad" aria-labelledby="archive-title">
-          <div className="archive-copy">
-            <span className="section-number">01 — {c.archiveKicker}</span>
-            <h2 id="archive-title">{c.archiveTitle}</h2>
-            <p>{c.archiveBody}</p>
-            <Link className="text-link" href={isZh ? "/zh/about" : "/about"}>{c.archiveCta}<ArrowRight size={15} /></Link>
-          </div>
-
-          <Link className="archive-feature" href={isZh ? "/zh/about" : "/about"}>
-            <div className="archive-feature-top"><span>001</span><span>COLLECTION</span></div>
-            <div className="archive-feature-main">
-              <span className="archive-feature-title">{c.archiveItem}</span>
-              <span className="archive-feature-body">{c.archiveItemBody}</span>
-            </div>
-            <ArrowUpRight className="archive-feature-arrow" size={22} />
-          </Link>
-        </section>
-
-        <section className="letter-section" aria-labelledby="letter-title">
-          <div className="section-pad letter-head">
-            <div><span className="section-number">02 — {c.letterKicker}</span><h2 id="letter-title">{c.letterTitle}</h2></div>
-            <p>{c.letterBody}</p>
-          </div>
-          <div className="manifesto-strip">
-            {c.manifesto.map((line, index) => <div key={line} className="manifesto-row"><span>0{index+1}</span><strong>{line}</strong></div>)}
-          </div>
-        </section>
-
-        <section className="closing-section section-pad">
-          <div className="closing-card">
-            <div className="closing-card-top"><span className="eyebrow">{c.closingKicker}</span><span className="closing-small">ohhoba.com</span></div>
-            <h2>{c.closingTitle}</h2>
-            <a className="button button-dark" href="mailto:admin@ohhoba.com">{c.nav.contact}<ArrowUpRight size={14} /></a>
           </div>
         </section>
       </main>

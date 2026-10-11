@@ -1,18 +1,7 @@
-const plugin = require("tailwindcss/plugin");
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: "media",
-  content: ["./app/**/*.{js,ts,jsx,tsx,mdx}"],
-  theme: {
-    extend: {
-      fontFamily: {
-        mono: ["var(--font-geist-mono)"],
-      },
-    },
-  },
+  darkMode: "class",
+  content: ["./app/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
+  theme: { extend: { fontFamily: { sans: ["var(--font-sans)"], mono: ["var(--font-mono)"] } } },
   plugins: [],
-  future: {
-    hoverOnlyWhenSupported: true,
-  },
 };

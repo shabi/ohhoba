@@ -1,49 +1,57 @@
-# OhHoBa
+# OhHoBa — Digital Museum & Art Lab
 
-OhHoBa is a Next.js creative archive exploring language, symbols, imagination, and unfinished ideas.
+An independent digital museum and art lab for unusual forms, experimental language, and ideas still becoming.
 
-## Design direction
+## Development
 
-The site was rebuilt around a museum/archive visual system inspired by the pacing and editorial composition of illoca.unseen.co, while using OhHoBa's own green brand color derived from `public/images/icon.svg`.
-
-Key principles:
-
-- English-first with a parallel Chinese experience at `/zh`
-- Responsive layouts for desktop, tablet, and mobile
-- Large editorial typography and restrained navigation
-- Archive content driven by the existing post data and view-count APIs
-- Reusable site header/footer and artifact components
-- Existing MDX posts, RSS/Atom, sitemap, OG routes, Redis view counting, and Vercel integrations remain intact
-
-## Local development
+Requirements: Node.js 22+ and pnpm.
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
-The project uses Next.js 16, React 19, TypeScript, Tailwind CSS, Framer Motion, and the existing MDX/Redis integrations.
+Production validation:
 
-## Main routes
+```bash
+pnpm build
+pnpm start
+```
 
-- `/` — English homepage
-- `/zh` — Chinese homepage
-- `/about` — English about page
-- `/zh/about` — Chinese about page
-- `/world` — OhHoBa World
-- `/<year>/<post-id>` — English articles
-- `/zh/<year>/<post-id>` — Chinese articles
+## Site architecture
 
-## Design note
-The hero artwork (`public/images/ohhoba-unknown-seed.png`) is intentionally text-free. All visible website copy is rendered in HTML/React so it remains editable, translatable, accessible, and indexable.
+- `/` — English home (default language)
+- `/zh` — Simplified Chinese home
+- `/collections` and `/zh/collections` — collection index
+- `/collections/[slug]` and `/zh/collections/[slug]` — collection detail pages
+- `/experiments` and `/zh/experiments` — interactive art lab index
+- `/experiments/shape-study` and `/zh/experiments/shape-study` — interactive visual study
+- `/about` and `/zh/about` — product and creative principles
+- Unknown URLs use a small bilingual global 404 because English and Chinese have separate root layouts; detail-page misses use the localized route-level 404.
 
-## OhHoBa V5 redesign
+English and Simplified Chinese use separate Next.js root layouts so the server-rendered `<html lang>` is correct for each locale. Shared UI strings live in `app/site-content.ts`; collection content lives in `app/collections-data.ts`. Adding a locale should extend the content maps and route/SEO mapping rather than duplicate page components.
 
-The homepage now follows a framed editorial-gallery composition inspired by the supplied illoca reference: paper-toned page field, centered floating navigation card, a bordered hero stage, and a scroll-driven five-step feature sequence. The hero artwork is intentionally text-free. All visible copy is rendered in HTML/React so it remains editable, translatable, accessible, and indexable.
+## Brand and themes
 
-SEO compatibility is preserved: existing article URLs, metadata, canonical/hreflang, robots, sitemap, Open Graph, JSON-LD, analytics, and Redis view-count functionality remain part of the application.
+- Original Logo: `public/images/icon.svg` (preserve shape and proportions)
+- White reverse Logo: `public/images/icon-white.svg` (same path geometry; white fill for dark backgrounds)
+- Light canvas: `#FFFFFF`; ink: `#171717`; brand green: `#78B94B`; auxiliary violet: `#7047D8`
+- Dark canvas: `#171217`; rose accent: `#A12D60` with brighter accessible states where needed
+- User theme preference is stored locally; first visit follows the OS preference. Reduced-motion settings are respected.
+
+## Accessibility and SEO checks
+
+Before publishing, test the primary flows using keyboard only, inspect visible focus, zoom to 200%, check narrow mobile widths, run a screen-reader spot check, verify color contrast in both themes, and confirm the language switch mappings. The production build should be followed by manual checks of metadata, canonical/hreflang, sitemap/robots, image alt text, true 404 behavior, and error recovery.
+
+The 404 and error screens are localized. No blog posts, feed, blog API, or blog-subdomain navigation are part of this site's information architecture.
 
 
-## Typography / guide update
-- Page grid remains global; the hero title panel masks the background grid locally and uses sparse crossed type-construction guides.
-- Display typography uses heavy weight with more generous tracking/leading. Manifesto items are centered within their cells.
+## Applying the rebuild to the existing Git checkout
+
+Unpack this archive into a separate folder. Create a branch from the agreed baseline (`8cfdc7a`) before applying the source. From the archive folder, run:
+
+```bash
+bash scripts/apply-ohhoba-rebuild.sh /path/to/your/ohhoba-checkout
+```
+
+The guarded script refuses to modify the same directory, a non-OhHoBa checkout, a dirty working tree, the `main`/`master` branch, or a different baseline. It preserves `.git` and replaces the site's application files intentionally as part of the full rebuild. Review `git diff` before committing.
